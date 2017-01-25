@@ -1,5 +1,5 @@
-% Analyze all test pictures and generate histograms grouped in beans then
-% saved the data in the file hist_features.mat
+% Analyze all test pictures and generate histograms grouped in bins then
+% save the data in the file hist_features.mat
 %
 % Arguments:
 %   - n_bins: number of bins to use for the histogram
