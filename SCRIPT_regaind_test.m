@@ -1,18 +1,16 @@
 % Load paths
-addpath('./fun')
-addpath('./data')
-pathname='/Volumes/500GO Jules/Wavelet/Data/';
-filename_test = [pathname 'test/facial_features_test.csv'];
-filename_train = [pathname 'train/facial_features_train.csv'];
-filename_score = [pathname 'Score_train.csv'];
+SCRIPT_config;
+filename_test = [cfg.dir_data 'test/facial_features_test.csv'];
+filename_train = [cfg.dir_data 'train/facial_features_train.csv'];
+filename_score = [cfg.dir_data 'train/Score_train.csv'];
 
 % Load data
 if ~exist('data','var')
     data=load_data(filename_train);
-    load('/Volumes/500GO Jules/Wavelet/Data/train/hist_features.mat')
+    load([cfg.dir_data 'train/hist_features.mat'])
     data=[data hist_features];
-    load('CNN_features.mat')
-    data=[data CNN_features];
+    load([cfg.dir_data 'train/blur_features_train.mat'])
+    data=[data blur_features];
 end
 if ~exist('score_train','var')
     score=load7(filename_score);

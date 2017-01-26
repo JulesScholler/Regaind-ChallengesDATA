@@ -29,7 +29,3 @@ fclose(fileID);
 
 %% Allocate imported array to column variable names
 score = dataArray{:, 1};
-
-
-%% Clear temporary variables
-clearvars filename delimiter startRow formatSpec fileID dataArray ans;
