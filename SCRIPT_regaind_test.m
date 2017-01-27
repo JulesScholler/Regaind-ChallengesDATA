@@ -12,7 +12,7 @@ if ~exist('data','var')
     load([cfg.dir_data 'train/blur_features_train.mat'])
     data=[data blur_features];
 end
-if ~exist('score_train','var')
+if ~exist('score','var')
     score=load7(filename_score);
 end
 
@@ -21,13 +21,20 @@ ind=randperm(10000)';
 score_rand=score(ind);
 data_rand=data(ind,:);
 
+% L2 normalize the histograms before running the linear SVM
+% data_rand= bsxfun(@times, data_rand, 1./sqrt(sum(data_rand.^2,1))) ;
+% L1 normalize the histograms before running the linear SVM
+data_rand = bsxfun(@times, data_rand, 1./sum(abs(data_rand),1)) ;
+% Kernel
+data_rand= sign(data_rand).*sqrt(abs(data_rand));
+
 % Loop for cross-validation evalutation
 for i=1:10
     % 10-fold partition
     [data_train,data_test]=CV(data_rand,10,i);
     [score_train,score_test]=CV(score_rand,10,i);
     % Train SVM
-    Mdl = fitrsvm(data_train,score_train,'KernelFunction','gaussian','KernelScale','auto','Standardize',true);
+    Mdl = fitrsvm(data_train,score_train,'KernelFunction','Linear','Standardize',true);
     % Predict scores
     score_predict=predict(Mdl,data_test);
     % Evaluate method

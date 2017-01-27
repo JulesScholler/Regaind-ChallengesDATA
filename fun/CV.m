@@ -12,12 +12,12 @@ end
 if mod(SIZE,k)~=0
     printf('Warning: the number of folds is not compatible with the number of samples')
 end
-TRAIN=DATA(ind(n):ind(n+1)-1,:);
+TEST=DATA(ind(n):ind(n+1)-1,:);
 if n==1
-    TEST=DATA(ind(n+1):ind(end)-1,:);
+    TRAIN=DATA(ind(n+1):ind(end)-1,:);
 else
-    TEST=DATA(ind(1):ind(n)-1,:);
-    TEST=[TEST; DATA(ind(n+1):ind(end)-1,:)];
+    TRAIN=DATA(ind(1):ind(n)-1,:);
+    TRAIN=[TRAIN; DATA(ind(n+1):ind(end)-1,:)];
 end
     
 
