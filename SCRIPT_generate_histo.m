@@ -1,27 +1,21 @@
-% Analyze all test pictures and generate histograms grouped in bins then
-% save the data in the file hist_features.mat
+% Analyze all pictures and generate histograms grouped in bins then save 
+% the data in the file hist_features.mat
 %
 % Arguments:
 %   - n_bins: number of bins to use for the histogram
+%
 % Return values:
 %   - hist_test: histogram features for the test dataset
 %   - hist_train: histogram features for the train dataset
 
 % Load the config parameters
-if ~exist('cfg','var')
-    run config;
-end
+SCRIPT_config;
 
 % Check if the features already exist
 if exist('hist_features.mat','file')
     % Load the data form the pre-existing .mat file
     disp('Loading data from hist_features.mat')
-    temp       = load('hist_features.mat');     % load the data
-    hist_train = temp.hist_train;               % histogram train dataset
-    disp('Train histogram done.')
-    hist_test  = temp.hist_test;                % histogram test dataset
-    disp('Test histogram done.')
-    clear temp;
+    load('hist_features.mat');
 else
     % Define parameters
     n_bins    = 10;     % number of bins
@@ -42,7 +36,7 @@ else
 
         % Display progress
         if mod(100*i/10000,5)==0
-            fprintf('Train histogram processing: %i%%\n',uint8(100*i/10000));
+            fprintf('Train histogram progress: %i%%\n',uint8(100*i/10000));
         end
     end
     disp('Train histogram done.')
@@ -57,7 +51,7 @@ else
 
         % Display progress
         if mod(100*i/3000,5)==0
-            fprintf('Test histogram processing: %i%%\n',uint8(100*i/3000));
+            fprintf('Test histogram progress: %i%%\n',uint8(100*i/3000));
         end
     end
     disp('Test histogram done.')
