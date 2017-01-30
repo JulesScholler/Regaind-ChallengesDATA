@@ -1,4 +1,4 @@
 /Data
 /MatConvNet
-hist_features.mat
+*.mat
 .DS_Store
