@@ -9,8 +9,8 @@
 %                   * fc6: 32
 %
 % Return values:
-%   - face_test: histogram features for the test dataset
-%   - face_train: histogram features for the train dataset
+%   - face_test: face features for the test dataset
+%   - face_train: face features for the train dataset
 
 % Load the config parameters
 SCRIPT_config;
