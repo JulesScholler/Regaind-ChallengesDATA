@@ -1,5 +1,5 @@
-% Train a SVM using the pre-generated features and return it for
-% evaluation.
+% Train a SVM using the pre-generated features and save it in the file
+% SVM_model.mat
 %
 % Return values:
 %   - SVM_model: trained SVM model
@@ -25,6 +25,7 @@ n_fold = 10;            % cross-validation parameters
 idx = randperm(10000);          % randomisation indices
 rank_eval = zeros(1,n_fold);    % pearson ranking correlation
 for i = 1:n_fold
+    tic
     % Generate the CV train and test dataset and corresponding scores
     sep_inf = 1+ floor((i-1)*10000/n_fold);         % inferior separator
     sep_sup = floor(i*10000/n_fold);                % superior separator  
@@ -43,12 +44,18 @@ for i = 1:n_fold
     predict_CV_test = predict(SVM_model,data_CV_test);
     
     % Evaluate method
-    [rank_eval(i),~] = corr(score_CV_test,predict_CV_test,'type','Pearson');    
+    [rank_eval(i),~] = corr(score_CV_test,predict_CV_test,'type','Pearson');
+    
+    % Display progress
+    toc
+    fprintf('Cross-validation iteration %i out of %i: %f\n',i,n_fold,rank_eval(i))
 end
 
-disp('Done')
-rank_eval
+% Display results
+disp('SVM cross validation done.')
+disp(rank_eval)
 
-%% Do a final training of the SVM with full data
+% Do a final training of the SVM with full data
 SVM_model = fitrsvm(data_train(idx,:),score_train(idx),'KernelFunction','Linear','Standardize',true);
-
+save('SVM_model.mat','SVM_model')
+disp('Final SVM model trained.')
