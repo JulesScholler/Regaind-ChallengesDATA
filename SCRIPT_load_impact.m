@@ -1,5 +1,5 @@
-% Load all impact data provided by Regaind for both the train data then 
-% save it in the file impact_features.mat
+% Load all impact data provided by Regaind for the train data then save
+% it in the file impact_features.mat
 %
 % Return values:
 %   - impact_train: impact features for the train dataset
