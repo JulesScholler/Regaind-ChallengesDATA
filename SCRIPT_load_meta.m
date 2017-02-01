@@ -24,7 +24,7 @@ else
     fclose(fileID_train);
 
     % Convert numeric data
-    numCol = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21, ...
+    numCol = [2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21, ...
         22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41, ...
         42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61, ...
         62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77, ...
@@ -32,8 +32,8 @@ else
     meta_train = NaN(10000, numel(numCol));
     meta_test = NaN(3000, numel(numCol));
     for i = 1:numel(numCol)
-        meta_test(:,i) = cellfun(@str2num,dataArray_test{numCol(i)}); 
-        meta_train(:,i) = cellfun(@str2num,dataArray_train{numCol(i)}); 
+        meta_test(:,i)  = cellfun(@str2num,dataArray_test{numCol(i)});
+        meta_train(:,i) = cellfun(@str2num,dataArray_train{numCol(i)});
     end
 
     % Special case :
@@ -77,7 +77,7 @@ else
         temp = cellfun(@str2num,temp);
         temp = temp.*cellfun(@str2num,strrep(dataArray_test{col+1},'None','0'));
         meta_test = [meta_test temp];
-    end
+    end    
 
     % Special case:
     %   - 95, list_others: create a column by attribute and add the
@@ -91,9 +91,15 @@ else
 
         % Check if the attribute is empty
         if ~strcmp(temp,'{}')
+            
             attribute = temp(4:strfind(temp,':')-2);
-            value     = str2double(temp(strfind(temp,':')+2:end-1));
-
+            % Check if we have only one value
+            if isempty(strfind(temp,','))                
+                value = str2double(temp(strfind(temp,':')+2:end-1));                
+            else
+                value = str2double(temp(strfind(temp,':')+2:strfind(temp,',')-1));
+            end
+            
             % Store the attribute if it's unique
             if ~ismember(attribute,unique_attributes)
                 unique_attributes = [unique_attributes; attribute];
@@ -115,8 +121,14 @@ else
 
         % Check if the attribute is empty
         if ~strcmp(temp,'{}')
+            
             attribute = temp(4:strfind(temp,':')-2);
-            value = str2double(temp(strfind(temp,':')+2:end-1));        
+            % Check if we have only one value
+            if isempty(strfind(temp,','))                
+                value = str2double(temp(strfind(temp,':')+2:end-1));                
+            else
+                value = str2double(temp(strfind(temp,':')+2:strfind(temp,',')-1));
+            end     
 
             % Record the value
             k = find(strcmp(unique_attributes,attribute));

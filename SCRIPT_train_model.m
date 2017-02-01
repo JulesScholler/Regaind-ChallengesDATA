@@ -16,7 +16,7 @@ SCRIPT_generate_vgg;    % vgg face for test and train
 
 % Assemble the data
 % data_train = [meta_train impact_train hist_train face_train];
-data_train = [meta_train impact_train];
+data_train = meta_train;
 
 % Set parameters
 n_fold = 10;            % cross-validation parameters
@@ -44,7 +44,7 @@ for i = 1:n_fold
     predict_CV_test = predict(SVM_model,data_CV_test);
     
     % Evaluate method
-    [rank_eval(i),~] = corr(score_CV_test,predict_CV_test,'type','Pearson');
+    [rank_eval(i),~] = corr(score_CV_test,predict_CV_test,'type','Spearman');
     
     % Display progress
     toc
@@ -52,8 +52,7 @@ for i = 1:n_fold
 end
 
 % Display results
-disp('SVM cross validation done.')
-disp(rank_eval)
+fprintf('SVM cross validation done, average: %f\n',mean(rank_eval))
 
 % Do a final training of the SVM with full data
 SVM_model = fitrsvm(data_train(idx,:),score_train(idx),'KernelFunction','Linear','Standardize',true);
