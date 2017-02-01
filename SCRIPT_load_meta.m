@@ -16,12 +16,10 @@ if exist('meta_features.mat','file')
 else
     % Load the data
     formatSpec = '%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%[^\n\r]';
-    fileID_test = fopen(cfg.facial_features_test,'r');
-    fileID_train = fopen(cfg.facial_features_train,'r');
-    dataArray_test = textscan(fileID_test, formatSpec, 'Delimiter', ',', ...
-        'HeaderLines', 1, 'ReturnOnError', false, 'EndOfLine', '\r\n');
-    dataArray_train = textscan(fileID_train, formatSpec, 'Delimiter', ',', ...
-        'HeaderLines', 1, 'ReturnOnError', false, 'EndOfLine', '\r\n');
+    fileID_test     = fopen(cfg.facial_features_test,'r');
+    fileID_train    = fopen(cfg.facial_features_train,'r');
+    dataArray_test  = textscan(fileID_test, formatSpec, 'Delimiter', ',', 'HeaderLines', 1, 'ReturnOnError', false, 'EndOfLine', '\r\n');
+    dataArray_train = textscan(fileID_train, formatSpec, 'Delimiter', ',', 'HeaderLines', 1, 'ReturnOnError', false, 'EndOfLine', '\r\n');
     fclose(fileID_test);
     fclose(fileID_train);
 
@@ -40,7 +38,7 @@ else
 
     % Special case :
     %   - 78, age: replace None with -1
-    meta_test = [meta_test ...
+    meta_test  = [meta_test ...
         cellfun(@str2num,strrep(dataArray_test{78},'None','-1'))];
     meta_train = [meta_train ...
         cellfun(@str2num,strrep(dataArray_train{78},'None','-1'))];
@@ -94,7 +92,7 @@ else
         % Check if the attribute is empty
         if ~strcmp(temp,'{}')
             attribute = temp(4:strfind(temp,':')-2);
-            value = str2double(temp(strfind(temp,':')+2:end-1));
+            value     = str2double(temp(strfind(temp,':')+2:end-1));
 
             % Store the attribute if it's unique
             if ~ismember(attribute,unique_attributes)
