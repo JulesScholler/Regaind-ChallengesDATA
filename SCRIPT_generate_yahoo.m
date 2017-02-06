@@ -211,12 +211,14 @@ end
 disp('Train yahoo done.')
 
 %% Test the model
+% Load features
 SCRIPT_load_score;
 SCRIPT_load_meta;
+load([cfg.dir_data 'train/hist_features.mat'])
+load([cfg.dir_data 'train/blur_features_train.mat'])
 
 % Assemble the data
-data_train = [meta_train yahoo_train(:,4)];
-% data_train = meta_train;
+data_train = [meta_train yahoo_train hist_features blur_features];
 
 % Set parameters
 n_fold = 5;                     % cross-validation parameters
