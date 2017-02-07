@@ -8,16 +8,17 @@
 SCRIPT_config;
 
 % Load the data
-SCRIPT_load_meta;               % metadata for test and train
-SCRIPT_load_impact;             % impact for train
-SCRIPT_load_score;              % aesthetics score for train
-SCRIPT_generate_histo;          % histogram for test and train
-SCRIPT_generate_vgg;            % vgg face for test and train
-SCRIPT_generate_basic_quality;  % overall image basic quality
+SCRIPT_load_meta;               % metadata
+% SCRIPT_load_impact;             % impact
+SCRIPT_load_score;              % aesthetics
+% SCRIPT_generate_histo;          % histogram
+% SCRIPT_generate_vgg;            % vgg face
+SCRIPT_generate_basic_quality;  % basic quality
+SCRIPT_generate_sharpness;      % sharpness 
 
 % Assemble the data
 % data_train = meta_train;
-data_train = [meta_train basic_qual_train yahoo_train];
+data_train = [meta_train basic_qual_train sharpness_train compositional_train];
 
 
 % Set parameters
@@ -39,15 +40,20 @@ for i = 1:n_fold
     score_CV_train = score_train(idx_CV_train);     % CV train score
     
     % Train the SVM
-    SVM_model = fitrsvm(data_CV_train,score_CV_train,'KernelFunction','Linear','Standardize',true);
+    SVM_model = fitrsvm(data_CV_train,score_CV_train,'KernelFunction','Gaussian','Standardize',true,'KernelScale','auto');
 %     SVM_model = fitrlinear(data_CV_train,score_CV_train);
     
     % Predict scores
     predict_CV_test = predict(SVM_model,data_CV_test);
     
     % Evaluate method
-    [rank_eval(i),~] = corr(score_CV_test,predict_CV_test,'type','Spearman')    
+    [rank_eval(i),~] = corr(score_CV_test,predict_CV_test,'type','Spearman')
 end
 
 % Display results
 fprintf('SVM cross validation done, average: %f\n',mean(rank_eval))
+
+%% Train the overall SVM
+SVM_model = fitrsvm(data_train,score_train,'KernelFunction','Gaussian','Standardize',true,'KernelScale','auto');
+save('SVM_model.mat', 'SVM_model')
+disp('SVM trained and saved.')

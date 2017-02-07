@@ -2,3 +2,4 @@
 /MatConvNet
 *.mat
 .DS_Store
+test*

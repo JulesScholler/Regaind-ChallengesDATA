@@ -1,11 +1,5 @@
-% Analyze all pictures and generate the yahoo features then save
-% the data in the file yahoo_features.mat
-%
-% Arguments:
-%   - bla: bla
-%
-% Return values:
-%   - bla: bla
+% Analyze all pictures and generate the sharpness features then save
+% the data in the file sharpness_features.mat
 %
 % Corresponding value indices:
 %   - 01: ID
@@ -107,8 +101,11 @@
 % Load the config parameters
 SCRIPT_config;
 
-if exist('yahoo_train','var')
-    fprintf('yahoo features allready loaded in workspace \n')
+% Check if the features already exist
+if exist('sharpness_features.mat','file')
+    % Load the data form the pre-existing .mat file
+    disp('Loading data from sharpness_features.mat')
+    load('sharpness_features.mat');
 else    
     % Retrieve facial features
     format = '%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%[^\n\r]';
@@ -119,11 +116,9 @@ else
     for i = 1:74
         faceData(:,i) = cellfun(@str2num,dataArray{i});
     end
-
     % Loop through all training images
-    disp('Train yahoo starting...')
-    % Initialize variables
-    yahoo_train = zeros(10000,9);                   % yahoo features
+    disp('Train sharpness starting...')
+    sharpness_train = zeros(10000,9);               % train features
     for i=1:10000
         % Open image
         im_fn    = [num2str(i) '.jpg'];             % image filename
@@ -190,66 +185,125 @@ else
         im_nose = im(max(1,y0):min(y1,row),max(1,x0):min(x1,col),:);
         
         % Compute features        
-        yahoo_train(i,1) = eval_sharpness(im);
-        yahoo_train(i,2) = eval_sharpness(im_face);
-        yahoo_train(i,3) = eval_sharpness(im_back);
-        yahoo_train(i,4) = eval_sharpness(im_left_eye);
-        yahoo_train(i,5) = eval_sharpness(im_right_eye);
-        yahoo_train(i,6) = eval_sharpness(im_left_eyebrow);
-        yahoo_train(i,7) = eval_sharpness(im_right_eyebrow);
-        yahoo_train(i,8) = eval_sharpness(im_mouth);
-        yahoo_train(i,9) = eval_sharpness(im_nose);
-        yahoo_train(i,isnan(yahoo_train(i,:))) = 0;
+        sharpness_train(i,1) = eval_sharpness(im);
+        sharpness_train(i,2) = eval_sharpness(im_face);
+        sharpness_train(i,3) = eval_sharpness(im_back);
+        sharpness_train(i,4) = eval_sharpness(im_left_eye);
+        sharpness_train(i,5) = eval_sharpness(im_right_eye);
+        sharpness_train(i,6) = eval_sharpness(im_left_eyebrow);
+        sharpness_train(i,7) = eval_sharpness(im_right_eyebrow);
+        sharpness_train(i,8) = eval_sharpness(im_mouth);
+        sharpness_train(i,9) = eval_sharpness(im_nose);
+        sharpness_train(i,isnan(sharpness_train(i,:))) = 0;
 
         % Display progress
         if mod(100*i/10000,5)==0
-            fprintf('Train exposure progress: %i%%\n',uint8(100*i/10000));
+            fprintf('Train sharpness progress: %i%%\n',uint8(100*i/10000));
         end
     end
+    disp('Train sharpness done.')
+    
+    % Retrieve facial features
+    format = '%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%[^\n\r]';
+    fileID = fopen(cfg.facial_features_test,'r');
+    dataArray = textscan(fileID, format, 'Delimiter', ',', 'HeaderLines', 1, 'ReturnOnError', false, 'EndOfLine', '\r\n');
+    fclose(fileID);
+    faceData = zeros(3000,74);
+    for i = 1:74
+        faceData(:,i) = cellfun(@str2num,dataArray{i});
+    end
+    % Loop through all training images
+    disp('Test sharpness starting...')
+    sharpness_test = zeros(3000,9);         % test features
+    for i=1:3000
+        % Open image
+        im_fn    = [num2str(10000+i) '.jpg'];       % image filename
+        im       = imread([cfg.dir_test im_fn]);    % open image        
+        
+        % Face
+        [row, col, ~] = size(im);
+        x0 = 1 + faceData(i,3)*col;
+        x1 = min(col, x0 + faceData(i,5)*col);
+        y0 = 1 + faceData(i,4)*row;
+        y1 = min(row, y0 + faceData(i,6)*row);
+        im_face = im(uint16(y0):uint16(y1),uint16(x0):uint16(x1),:);
+        
+        % Background
+        im_back = double(im);
+        im_back(uint16(y0):uint16(y1),uint16(x0):uint16(x1),:) = nan;
+        
+        % Left eye
+        pt = [7 39 41 43 45 47];
+        x0 = uint16(1+min(faceData(i,pt))*col);
+        x1 = uint16(1+max(faceData(i,pt))*col);
+        y0 = uint16(1+min(faceData(i,pt+1))*row);
+        y1 = uint16(1+max(faceData(i,pt+1))*row);
+        im_left_eye = im(max(1,y0):min(y1,row),max(1,x0):min(x1,col),:);
+        
+        % Right eye
+        pt = [9 49 51 53 55 57];
+        x0 = uint16(1+min(faceData(i,pt))*col);
+        x1 = uint16(1+max(faceData(i,pt))*col);
+        y0 = uint16(1+min(faceData(i,pt+1))*row);
+        y1 = uint16(1+max(faceData(i,pt+1))*row);
+        im_right_eye = im(max(1,y0):min(y1,row),max(1,x0):min(x1,col),:);
+        
+        % Left eyebrow
+        pt = [11 13 59];
+        x0 = uint16(1+min(faceData(i,pt))*col);
+        x1 = uint16(1+max(faceData(i,pt))*col);
+        y0 = uint16(1+min(faceData(i,pt+1))*row);
+        y1 = uint16(1+max(faceData(i,pt+1))*row);
+        im_left_eyebrow = im(max(1,y0):min(y1,row),max(1,x0):min(x1,col),:);
 
+        % Right eyebrow
+        pt = [15 17 61];
+        x0 = uint16(1+min(faceData(i,pt))*col);
+        x1 = uint16(1+max(faceData(i,pt))*col);
+        y0 = uint16(1+min(faceData(i,pt+1))*row);
+        y1 = uint16(1+max(faceData(i,pt+1))*row);
+        im_right_eyebrow = im(max(1,y0):min(y1,row),max(1,x0):min(x1,col),:);
+
+        % Mouth
+        pt = [23 25 27 29 31];
+        x0 = uint16(1+min(faceData(i,pt))*col);
+        x1 = uint16(1+max(faceData(i,pt))*col);
+        y0 = uint16(1+min(faceData(i,pt+1))*row);
+        y1 = uint16(1+max(faceData(i,pt+1))*row);
+        im_mouth = im(max(1,y0):min(y1,row),max(1,x0):min(x1,col),:);
+
+        % Nose
+        pt = [19 21 33 35 37];
+        x0 = uint16(1+min(faceData(i,pt))*col);
+        x1 = uint16(1+max(faceData(i,pt))*col);
+        y0 = uint16(1+min(faceData(i,pt+1))*row);
+        y1 = uint16(1+max(faceData(i,pt+1))*row);
+        im_nose = im(max(1,y0):min(y1,row),max(1,x0):min(x1,col),:);
+        
+        % Compute features        
+        sharpness_test(i,1) = eval_sharpness(im);
+        sharpness_test(i,2) = eval_sharpness(im_face);
+        sharpness_test(i,3) = eval_sharpness(im_back);
+        sharpness_test(i,4) = eval_sharpness(im_left_eye);
+        sharpness_test(i,5) = eval_sharpness(im_right_eye);
+        sharpness_test(i,6) = eval_sharpness(im_left_eyebrow);
+        sharpness_test(i,7) = eval_sharpness(im_right_eyebrow);
+        sharpness_test(i,8) = eval_sharpness(im_mouth);
+        sharpness_test(i,9) = eval_sharpness(im_nose);
+        sharpness_test(i,isnan(sharpness_test(i,:))) = 0;
+
+        % Display progress
+        if mod(100*i/3000,5)==0
+            fprintf('Test sharpness progress: %i%%\n',uint8(100*i/3000));
+        end
+    end
+    disp('Test sharpness done.')
+        
+    % Clear variables
+    clear ans col dataArray faceData fileID format i im im_back im_face;
+    clear im_face im_fn in_left_eye im_left_eyebrow im_mouth im_nose;
+    clear im_right_eye im_right_eyebrow pt row x0 x1 y0 y1;
+    
+    % Save data
+    save('sharpness_features.mat','sharpness_train','sharpness_test')
 end
-disp('Train yahoo done.')
-
-%% Test the model
-% Load features
-SCRIPT_load_score;
-SCRIPT_load_meta;
-load([cfg.dir_data 'train/hist_features.mat'])
-load([cfg.dir_data 'train/blur_features_train.mat'])
-
-% Assemble the data
-data_train = [meta_train yahoo_train hist_features blur_features];
-
-% Set parameters
-n_fold = 10;                     % cross-validation parameters
-
-% Do cross-validation training for evaluation
-idx = randperm(10000);          % randomisation indices
-rank_eval = zeros(1,n_fold);    % pearson ranking correlation
-for i = 1:n_fold
-    % Generate the CV train and test dataset and corresponding scores
-    sep_inf = 1+ floor((i-1)*10000/n_fold);         % inferior separator
-    sep_sup = floor(i*10000/n_fold);                % superior separator  
-    idx_CV_test  = idx(sep_inf:sep_sup);            % CV test indices
-    idx_CV_train = idx;                             % CV train indices
-    idx_CV_train(sep_inf:sep_sup) = [];             % remove test indices
-    data_CV_test   = data_train(idx_CV_test,:);     % CV test data   
-    data_CV_train  = data_train(idx_CV_train,:);    % CV train data
-    score_CV_test  = score_train(idx_CV_test);      % CV test score
-    score_CV_train = score_train(idx_CV_train);     % CV train score
-    
-    % Train the SVM
-%     SVM_model = fitrsvm(data_CV_train,score_CV_train,'KernelFunction','Linear','Standardize',true);
-    SVM_model = fitrlinear(data_CV_train,score_CV_train);
-    
-    % Predict scores
-    predict_CV_test = predict(SVM_model,data_CV_test);
-    
-    % Evaluate method
-    [rank_eval(i),~] = corr(score_CV_test,predict_CV_test,'type','Spearman');
-end
-
-% Display results
-fprintf('SVM cross validation done, average: %f\n',mean(rank_eval))
-
-
