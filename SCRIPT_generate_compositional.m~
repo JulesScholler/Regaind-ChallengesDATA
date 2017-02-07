@@ -60,7 +60,6 @@ else
             fprintf('Test basic quality: %i%%\n',uint8(100*i/3000));
         end
     end
-    
     compositional_test=[hist_test contrast_test];
     disp('Test basic quality done.')
 
