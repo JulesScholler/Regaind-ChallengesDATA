@@ -107,8 +107,8 @@
 % Load the config parameters
 SCRIPT_config;
 
-if 0
-    return
+if exist('yahoo_train','var')
+    fprintf('yahoo features allready loaded in workspace \n')
 else    
     % Retrieve facial features
     format = '%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%q%[^\n\r]';
@@ -221,7 +221,7 @@ load([cfg.dir_data 'train/blur_features_train.mat'])
 data_train = [meta_train yahoo_train hist_features blur_features];
 
 % Set parameters
-n_fold = 5;                     % cross-validation parameters
+n_fold = 10;                     % cross-validation parameters
 
 % Do cross-validation training for evaluation
 idx = randperm(10000);          % randomisation indices
