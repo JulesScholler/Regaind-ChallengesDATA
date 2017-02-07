@@ -1,0 +1,24 @@
+function [hist]=eval_hist(im_RGB)
+
+im_HSV=rgb2hsv(double(im_RGB));
+
+% Define parameters
+n_bins.H    = 12;     % number of bins
+n_bins.S    = 5;
+n_bins.V    = 3;
+
+edges  = linspace(0,1,n_bins.H+1);            % bins separator
+[tmp,~] = histcounts(im_HSV(:,:,1),edges);    % create histograms
+hist = tmp/sum(tmp);                          % normalize histograms
+hist=[hist std(tmp)];
+clear edges tmp
+edges  = linspace(0,1,n_bins.S+1);
+[tmp,~] = histcounts(im_HSV(:,:,2),edges);             
+hist = [hist tmp/sum(tmp)];
+clear edges tmp
+edges  = linspace(0,1,n_bins.V+1);
+[tmp,~] = histcounts(im_HSV(:,:,3),edges);             
+hist = [hist tmp/sum(tmp)];
+clear edges tmp
+
+end
