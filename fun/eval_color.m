@@ -1,7 +1,7 @@
 function [hist]=eval_color(im_RGB)
 
 im_HSV=rgb2hsv(double(im_RGB));
-im_HSV=im_HSV/255;
+im_HSV(:,:,3)=im_HSV(:,:,3)/255;
 
 % Define parameters
 n_bins.H    = 12;     % number of bins
