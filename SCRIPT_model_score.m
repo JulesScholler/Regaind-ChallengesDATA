@@ -11,18 +11,19 @@ SCRIPT_config;
 % SCRIPT_load_impact;             % impact
 % SCRIPT_generate_histo;          % histogram
 % SCRIPT_generate_vgg;            % vgg face
-SCRIPT_load_meta;               % metadata
-SCRIPT_load_score;              % aesthetics
-SCRIPT_generate_basic_quality;  % basic quality
-SCRIPT_generate_sharpness;      % sharpness
-SCRIPT_generate_compositional;  % composition
-SCRIPT_generate_symmetry;       % symmetry
-SCRIPT_generate_circles;        % number of circles
+SCRIPT_load_meta;                   % metadata
+SCRIPT_load_score;                  % aesthetics
+SCRIPT_generate_basic_quality;      % basic quality
+SCRIPT_generate_sharpness;          % sharpness
+SCRIPT_generate_compositional;      % composition
+SCRIPT_generate_symmetry;           % symmetry
+SCRIPT_generate_circles;            % number of circles
+SCRIPT_generate_spectral_saliency   % spectral saliency
 
 % Assemble the data
 % data_train = meta_train;
 data_train = [meta_train basic_qual_train sharpness_train ...
-    compositional_train sym_train circ_train];
+    compositional_train sym_train spectral_saliency_train];
 
 % Set parameters
 n_fold = 10;            % cross-validation parameters
