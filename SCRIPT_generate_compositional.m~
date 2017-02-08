@@ -8,10 +8,10 @@
 SCRIPT_config;
 
 % Check if the features already exist
-if exist('spectral_saliency_features.mat','file')
+if exist('basic_qual_features.mat','file')
     % Load the data form the pre-existing .mat file
-    disp('Loading data from spectral_saliency_features.mat')
-    load('spectral_saliency_features.mat');
+    disp('Loading data from basic_qual_features.mat')
+    load('basic_qual_features.mat');
 else
     % Initialize variables   
     spectral_saliency_train= zeros(10000,9);   % test features
@@ -57,5 +57,5 @@ else
     disp('Test basic quality done.')
 
     % Save data
-    save('spectral_saliency_features.mat','spectral_saliency_train','spectral_saliency_test')
+    save('spectral_saliency.mat','compositional_train','compositional_test')
 end

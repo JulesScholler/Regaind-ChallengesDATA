@@ -41,8 +41,9 @@ for i = 1:n_fold
     score_CV_train = score_train(idx_CV_train);     % CV train score
     
     % Train the SVM
-    SVM_model = fitrsvm(data_CV_train,score_CV_train,'KernelFunction','Gaussian','Standardize',true,'KernelScale','auto');
+%     SVM_model = fitrsvm(data_CV_train,score_CV_train,'KernelFunction','Gaussian','Standardize',true,'KernelScale','auto');
 %     SVM_model = fitrlinear(data_CV_train,score_CV_train);
+    SVM_model = fitrsvm(data_CV_train,score_CV_train,'KernelFunction','Gaussian','Standardize',true,'KernelScale','auto');
     
     % Predict scores
     predict_CV_test = predict(SVM_model,data_CV_test);
