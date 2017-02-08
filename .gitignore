@@ -1,5 +1,6 @@
 /Data
 /MatConvNet
-*.mat
 .DS_Store
+*.mat
 test*
+SCRIPT_config.m
