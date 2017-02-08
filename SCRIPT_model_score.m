@@ -8,16 +8,6 @@
 SCRIPT_config;
 
 % Load the data
-<<<<<<< HEAD
-% SCRIPT_load_meta;               % metadata
-% SCRIPT_load_impact;             % impact
-% SCRIPT_load_score;              % aesthetics
-% SCRIPT_generate_histo;          % histogram
-% SCRIPT_generate_vgg;            % vgg face
-% SCRIPT_generate_basic_quality;  % basic quality
-% SCRIPT_generate_sharpness;      % sharpness
-% SCRIPT_generate_symmetry;       % symmetry
-=======
 % SCRIPT_load_impact;             % impact
 % SCRIPT_generate_histo;          % histogram
 % SCRIPT_generate_vgg;            % vgg face
@@ -28,7 +18,6 @@ SCRIPT_generate_sharpness;      % sharpness
 SCRIPT_generate_compositional;  % composition
 SCRIPT_generate_symmetry;       % symmetry
 SCRIPT_generate_circles;        % number of circles
->>>>>>> origin/master
 
 % Assemble the data
 % data_train = meta_train;
