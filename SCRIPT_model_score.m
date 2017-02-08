@@ -8,6 +8,7 @@
 SCRIPT_config;
 
 % Load the data
+<<<<<<< HEAD
 % SCRIPT_load_meta;               % metadata
 % SCRIPT_load_impact;             % impact
 % SCRIPT_load_score;              % aesthetics
@@ -16,11 +17,23 @@ SCRIPT_config;
 % SCRIPT_generate_basic_quality;  % basic quality
 % SCRIPT_generate_sharpness;      % sharpness
 % SCRIPT_generate_symmetry;       % symmetry
+=======
+% SCRIPT_load_impact;             % impact
+% SCRIPT_generate_histo;          % histogram
+% SCRIPT_generate_vgg;            % vgg face
+SCRIPT_load_meta;               % metadata
+SCRIPT_load_score;              % aesthetics
+SCRIPT_generate_basic_quality;  % basic quality
+SCRIPT_generate_sharpness;      % sharpness
+SCRIPT_generate_compositional;  % composition
+SCRIPT_generate_symmetry;       % symmetry
+SCRIPT_generate_circles;        % number of circles
+>>>>>>> origin/master
 
 % Assemble the data
 % data_train = meta_train;
 data_train = [meta_train basic_qual_train sharpness_train ...
-    compositional_train sym_train];
+    compositional_train sym_train circ_train];
 
 % Set parameters
 n_fold = 10;            % cross-validation parameters
@@ -54,7 +67,7 @@ end
 % Display results
 fprintf('SVM cross validation done, average: %f\n',mean(rank_eval))
 
-% Train the overall SVM
+%% Train the overall SVM
 SVM_model = fitrsvm(data_train,score_train,'KernelFunction','Gaussian','Standardize',true,'KernelScale','auto');
 save('SVM_model.mat', 'SVM_model')
 disp('SVM trained and saved.')
