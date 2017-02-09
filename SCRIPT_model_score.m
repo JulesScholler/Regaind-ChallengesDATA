@@ -25,7 +25,7 @@ SCRIPT_generate_spectral_saliency   % spectral saliency
 data_train = [meta_train basic_qual_train sharpness_train ...
     compositional_train sym_train circ_train spectral_saliency_train];
 % Kernel
-data_train= sign(data_train).*sqrt(abs(data_train)); % Hellinger
+% data_train= sign(data_train).*sqrt(abs(data_train)); % Hellinger
 % Data Standardization (= 'Standardized':'true' when calling fitrsvm)
 data_train=(data_train-repmat(mean(data_train,1),[10000 1]))./repmat(std(data_train,0,1),[10000 1]);
 
