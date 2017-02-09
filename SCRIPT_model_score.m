@@ -18,11 +18,17 @@ SCRIPT_generate_sharpness;      % sharpness
 SCRIPT_generate_compositional;  % composition
 SCRIPT_generate_symmetry;       % symmetry
 SCRIPT_generate_circles;        % number of circles
+SCRIPT_generate_color_names;    % discriminative colors
+SCRIPT_generate_GLCM;           % GLCM properties
+SCRIPT_generate_details;        % level of details
+SCRIPT_generate_image_order;    % shanon entropy
+load('spectral_saliency_features.mat')
+load('blur_features.mat')
 
 % Assemble the data
-% data_train = meta_train;
 data_train = [meta_train basic_qual_train sharpness_train ...
-    compositional_train sym_train circ_train];
+    compositional_train sym_train circ_train spectral_saliency_train ...
+    discol_train glcm_train lvldet_train order_train blur_train];
 
 % Set parameters
 n_fold = 10;            % cross-validation parameters
@@ -51,12 +57,13 @@ for i = 1:n_fold
     
     % Evaluate method
     [rank_eval(i),~] = corr(score_CV_test,predict_CV_test,'type','Spearman')
+    
 end
 
 % Display results
 fprintf('SVM cross validation done, average: %f\n',mean(rank_eval))
 
-%% Train the overall SVM
+% Train the overall SVM
 SVM_model = fitrsvm(data_train,score_train,'KernelFunction','Gaussian','Standardize',true,'KernelScale','auto');
 save('SVM_model.mat', 'SVM_model')
 disp('SVM trained and saved.')

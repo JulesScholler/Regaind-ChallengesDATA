@@ -3,7 +3,8 @@ load('SVM_model.mat', 'SVM_model')
 
 % Assemble the data
 data_test = [meta_test basic_qual_test sharpness_test ...
-    compositional_test sym_test];
+    compositional_test sym_test circ_test spectral_saliency_test ...
+    discol_test glcm_test lvldet_test order_test blur_test];
 
 % Predict scores
 predict_test = predict(SVM_model,data_test);
