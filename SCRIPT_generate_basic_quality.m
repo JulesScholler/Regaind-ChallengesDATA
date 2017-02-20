@@ -31,13 +31,14 @@ else
         im_gray = rgb2gray(im);                         % grayscale
         im_eq   = double(histeq(im_gray));              % hist equalization
         im_diff = (double(im_gray) - im_eq).^2;         % diff square
-        basic_qual_train(i,1) = sqrt(mean(im_diff(:))); % mean
+        basic_qual_train(i,1) = sqrt(mean(im_diff(:))); % mean      
         
         % Compute the exposure quality
         im_y    = rgb2ycbcr(im);                        % change space
         im_y    = im_y(:,:,1);                          % luminance
         skew_y  = skewness(histcounts(im_y,linspace(0,255,256)));
         basic_qual_train(i,2) = -abs(skew_y);           % exposure
+        
         
         % Display progress
         if mod(100*i/10000,5)==0

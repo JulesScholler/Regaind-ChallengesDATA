@@ -23,7 +23,6 @@ SCRIPT_generate_GLCM;               % GLCM properties
 SCRIPT_generate_details;            % level of details
 SCRIPT_generate_image_order;        % shanon entropy
 SCRIPT_generate_spectral_saliency;  % spectral saliency
-load('spectral_saliency_features.mat')
 load('blur_features.mat')
 
 % Assemble the data
@@ -48,9 +47,9 @@ for i = 1:n_fold
     data_CV_train  = data_train(idx_CV_train,:);    % CV train data
     score_CV_test  = score_train(idx_CV_test);      % CV test score
     score_CV_train = score_train(idx_CV_train);     % CV train score
-    
+       
     % Train the SVM
-    SVM_model = fitrsvm(data_CV_train,score_CV_train,'KernelFunction','Gaussian','KernelScale','auto');
+    SVM_model = fitrsvm(data_CV_train,score_CV_train,'KernelFunction','Gaussian','Standardize',true,'KernelScale','auto');
     
     % Predict scores
     predict_CV_test = predict(SVM_model,data_CV_test);
@@ -63,7 +62,7 @@ end
 % Display results
 fprintf('SVM cross validation done, average: %f\n',mean(rank_eval))
 
-% Train the overall SVM
+%% Train the overall SVM
 SVM_model = fitrsvm(data_train,score_train,'KernelFunction','Gaussian','Standardize',true,'KernelScale','auto');
 save('SVM_model.mat', 'SVM_model')
 disp('SVM trained and saved.')

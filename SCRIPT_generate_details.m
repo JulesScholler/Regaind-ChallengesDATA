@@ -36,6 +36,7 @@ else
         im_bn = imclose(imopen(im_bn,shape),shape);     % segmentation 2        
         im_lb = bwlabel(im_bn);                         % image labeling        
         n_reg = max(im_lb(:));                          % number of regions
+        %%
         
         % Store the value
         lvldet_train(i) = n_reg;

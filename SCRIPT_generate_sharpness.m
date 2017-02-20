@@ -1,4 +1,4 @@
-% Analyze all pictures and generate the sharpness features then save
+t% Analyze all pictures and generate the sharpness features then save
 % the data in the file sharpness_features.mat
 %
 
